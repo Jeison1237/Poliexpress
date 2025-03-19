@@ -1,0 +1,14 @@
+{% extends 'pedidos/base.html' %}
+{% block content %}
+<h1>Lista de Productos</h1>
+<a href="{% url 'crear_producto' %}">Agregar Producto</a>
+<ul>
+    {% for producto in productos %}
+        <li>
+            <a href="{% url 'detalle_producto' producto.id %}">{{ producto.nombre }}</a>
+            - <a href="{% url 'editar_producto' producto.id %}">Editar</a>
+            - <a href="{% url 'eliminar_producto' producto.id %}">Eliminar</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

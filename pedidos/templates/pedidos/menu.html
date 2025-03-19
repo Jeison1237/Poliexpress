@@ -1,0 +1,19 @@
+{% extends 'pedidos/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Menú de Productos</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <img src="/static/pedidos/img/placeholder.jpg" class="card-img-top" alt="Producto">
+                <div class="card-body">
+                    <h5 class="card-title">Producto 1</h5>
+                    <p class="card-text">Descripción del producto.</p>
+                    <a href="#" class="btn btn-success">Ordenar</a>
+                </div>
+            </div>
+        </div>
+        <!-- Puedes duplicar este bloque para más productos -->
+    </div>
+</div>
+{% endblock %}

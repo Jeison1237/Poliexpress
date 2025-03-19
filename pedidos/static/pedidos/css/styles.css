@@ -1,0 +1,196 @@
+/* styles.css - Mejorado */
+
+/* ======= General ======= */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* ======= Navbar ======= */
+.navbar {
+    padding: 1rem;
+    background: #004494;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease-in-out;
+}
+
+.navbar-brand {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: white;
+}
+
+.nav-link {
+    font-size: 1.1rem;
+    color: white !important;
+    transition: color 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+    color: #a9c2e5 !important;
+}
+
+/* ======= Menú desplegable ======= */
+.navbar .dropdown-menu {
+    background: #004494;
+    border: none;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.navbar .dropdown-item {
+    color: white;
+    transition: background 0.3s;
+}
+
+.navbar .dropdown-item:hover {
+    background: #003366;
+}
+
+/* ======= Contenido ======= */
+.container {
+    margin-top: 20px;
+}
+
+/* ======= Botones ======= */
+.btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #003d80;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+/* ======= Formularios ======= */
+form {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+form input, form textarea, form select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    font-size: 1rem;
+}
+
+form input:focus, form textarea:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+
+/* ======= Tarjetas de Productos ======= */
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover img {
+    transform: scale(1.02);
+}
+
+/* ======= Carrusel ======= */
+.carousel img {
+    height: 400px;
+    object-fit: cover;
+    width: 100%;
+    border-radius: 10px;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-item:hover img {
+    transform: scale(1.02);
+}
+
+/* ======= Listado de Productos ======= */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    background: white;
+    margin: 10px 0;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+ul li a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #007bff;
+    transition: color 0.3s ease-in-out;
+}
+
+ul li a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+/* ======= Noticias ======= */
+.list-group-item {
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+    border-left: 5px solid #007bff;
+    padding: 15px;
+}
+
+.list-group-item:hover {
+    background-color: #e9ecef;
+    transform: scale(1.02);
+}
+
+/* ======= Footer ======= */
+footer {
+    margin-top: 50px;
+    text-align: center;
+    padding: 20px;
+    background: #343a40;
+    color: white;
+    font-size: 1rem;
+    transition: background 0.3s ease-in-out;
+}
+
+footer:hover {
+    background: #23272b;
+}

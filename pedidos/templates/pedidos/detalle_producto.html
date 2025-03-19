@@ -1,0 +1,8 @@
+{% extends 'pedidos/base.html' %}
+{% block content %}
+<h1>{{ producto.nombre }}</h1>
+<p>{{ producto.descripcion }}</p>
+<p>Precio: ${{ producto.precio }}</p>
+<p>{% if producto.disponible %}Disponible{% else %}No disponible{% endif %}</p>
+<a href="{% url 'lista_productos' %}">Volver</a>
+{% endblock %}
