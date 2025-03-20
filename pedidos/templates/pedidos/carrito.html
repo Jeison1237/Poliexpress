@@ -1,0 +1,29 @@
+{% extends 'pedidos/base.html' %}
+{% block content %}
+    <h1>🛒 Carrito de Compras</h1>
+    
+    <ul id="lista-carrito" class="list-group"></ul>
+    
+    <button class="btn btn-success mt-3" onclick="realizarPedido()">Realizar Pedido</button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+            let contenedor = document.getElementById("lista-carrito");
+
+            if (carrito.length === 0) {
+                contenedor.innerHTML = "<li class='list-group-item'>El carrito está vacío.</li>";
+            } else {
+                carrito.forEach(item => {
+                    contenedor.innerHTML += `<li class="list-group-item">${item.nombre} - ${item.cantidad}</li>`;
+                });
+            }
+        });
+
+        function realizarPedido() {
+            alert("Pedido enviado correctamente.");
+            localStorage.removeItem("carrito");
+            location.reload();
+        }
+    </script>
+{% endblock %}

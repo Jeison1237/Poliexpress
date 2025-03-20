@@ -8,22 +8,34 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <!-- Barra de navegación simplificada -->
+    <!-- Barra de navegación -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/">Poliexpress</a>
+            <button id="toggle-dark" class="floating-btn">🌙</button>
+            
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="{% url 'pedidos:index' %}">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'pedidos:crear_producto' %}">Nuevo Producto</a></li>
+                    
+                    <!-- Botón del carrito con contador -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="{% url 'pedidos:carrito' %}">
+                            🛒 Carrito <span id="contador-carrito" class="badge bg-danger">0</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" id="carrito">
+                            <li><a class="dropdown-item">Carrito vacío</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
-    
     
     <!-- Contenido principal -->
     <div class="container mt-4">
@@ -35,7 +47,8 @@
         <p>&copy; 2025 Poliexpress - Todos los derechos reservados.</p>
         <p><a href="/terminos" class="text-white">Términos y condiciones</a> | <a href="/privacidad" class="text-white">Política de privacidad</a></p>
     </footer>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/pedidos/js/scripts.js"></script>
 </body>
 </html>

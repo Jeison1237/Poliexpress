@@ -82,4 +82,27 @@
         width: 100%;
         text-align: center;
     }
+    .navbar-scroll {
+        background-color: #333 !important;
+        transition: background-color 0.3s ease-in-out;
+    }
+
 }
+    /* .dark mode */
+    .floating-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #333;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background 0.3s ease-in-out;
+    }
+    
+    .floating-btn:hover {
+        background: #555;
+    }
+    
