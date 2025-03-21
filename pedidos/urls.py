@@ -19,4 +19,10 @@ urlpatterns = [
 
     # Carrito de compras
     path('carrito/', views.carrito, name='carrito'),
+    
+    # Manejo de usuarios
+    path('perfil/', views.perfil, name='perfil'),
+    path('registro/', views.registro, name='registro'),
+    path('login/', views.iniciar_sesion, name='login'),
+    path('logout/', views.cerrar_sesion, name='logout'),
 ]

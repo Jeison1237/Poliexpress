@@ -2,6 +2,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from .models import Producto
 from .forms import ProductoForm
+from django.contrib.auth import authenticate, login, logout
+from .forms import RegistroUsuarioForm
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     """ Página principal de Poliexpress """
@@ -57,3 +61,32 @@ def eliminar_producto(request, producto_id):
 def carrito(request):
     """ Página del carrito de compras """
     return render(request, 'pedidos/carrito.html')
+
+def registro(request):
+    if request.method == "POST":
+        form = RegistroUsuarioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('pedidos:login')
+    else:
+        form = RegistroUsuarioForm()
+    return render(request, 'pedidos/registro.html', {'form': form})
+
+def iniciar_sesion(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('pedidos:index')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'pedidos/login.html', {'form': form})
+
+def cerrar_sesion(request):
+    logout(request)
+    return redirect('pedidos:index')
+
+@login_required
+def perfil(request):
+    return render(request, 'pedidos/perfil.html')

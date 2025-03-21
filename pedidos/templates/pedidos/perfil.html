@@ -1,0 +1,16 @@
+{% extends 'pedidos/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Mi Perfil</h1>
+    <div class="card p-3 mt-3">
+        <p><strong>Usuario:</strong> {{ user.username }}</p>
+        <p><strong>Correo:</strong> {{ user.email }}</p>
+        {% if user.perfil %}
+            <p><strong>Rol:</strong> {{ user.perfil.rol }}</p>
+        {% endif %}
+    </div>
+
+    <a href="{% url 'pedidos:logout' %}" class="btn btn-danger mt-3">Cerrar Sesión</a>
+</div>
+{% endblock %}

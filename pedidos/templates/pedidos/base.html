@@ -11,27 +11,47 @@
     <!-- Barra de navegación -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">Poliexpress</a>
-            <button id="toggle-dark" class="floating-btn">🌙</button>
+            <a class="navbar-brand" href="{% url 'pedidos:index' %}">Poliexpress</a>
             
+            <!-- Botón para cambiar a modo oscuro -->
+            <button id="toggle-dark" class="floating-btn">🌙</button>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="{% url 'pedidos:index' %}">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'pedidos:crear_producto' %}">Nuevo Producto</a></li>
-                    
-                    <!-- Botón del carrito con contador -->
-                    <li class="nav-item dropdown">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'pedidos:menu' %}">Menú</a></li>
+
+                    <!-- Mostrar "Nuevo Producto" solo a vendedores -->
+                    {% if user.is_authenticated and user.perfil.rol == "vendedor" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'pedidos:crear_producto' %}">➕ Nuevo Producto</a></li>
+                    {% endif %}
+
+                    <!-- Carrito de compras -->
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'pedidos:carrito' %}">
                             🛒 Carrito <span id="contador-carrito" class="badge bg-danger">0</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end" id="carrito">
-                            <li><a class="dropdown-item">Carrito vacío</a></li>
-                        </ul>
                     </li>
+
+                    <!-- Menú de usuario -->
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                👤 {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'pedidos:perfil' %}">Mi Perfil</a></li>
+                                <li><a class="dropdown-item" href="{% url 'pedidos:logout' %}">Cerrar Sesión</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'pedidos:login' %}">Iniciar Sesión</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'pedidos:registro' %}">Registrarse</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
