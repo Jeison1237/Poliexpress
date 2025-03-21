@@ -56,16 +56,40 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    window.agregarAlCarrito = function (id, nombre, precio) {
-        let producto = carrito.find(item => item.id === id);
-        if (producto) {
-            producto.cantidad++;
-        } else {
-            carrito.push({ id, nombre, precio, cantidad: 1 });
+    function agregarAlCarrito(id) {
+        fetch("/agregar_al_carrito/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": getCookie("csrftoken") // Necesario en Django para seguridad
+            },
+            body: `producto_id=${id}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Producto agregado al carrito");
+            } else {
+                alert("Error al agregar al carrito");
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    }
+    
+    // Función para obtener CSRF token (Django lo usa para seguridad en POST requests)
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            let cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
         }
-        localStorage.setItem("carrito", JSON.stringify(carrito));
-        actualizarCarritoUI();
-    };
-
-    actualizarCarritoUI();
+        return cookieValue;
+    }
+    
 });

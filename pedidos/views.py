@@ -7,6 +7,9 @@ from .forms import RegistroUsuarioForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from collections import defaultdict
+from .models import Producto, Carrito, ItemCarrito
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 def index(request):
     """ Página principal de Poliexpress """
@@ -102,3 +105,33 @@ def cerrar_sesion(request):
 @login_required
 def perfil(request):
     return render(request, 'pedidos/perfil.html')
+
+@login_required
+@csrf_exempt
+def agregar_al_carrito(request):
+    if request.method == "POST":
+        producto_id = request.POST.get("producto_id")
+        
+        try:
+            producto = Producto.objects.get(id=producto_id)
+            carrito, creado = Carrito.objects.get_or_create(usuario=request.user, producto=producto)
+            carrito.cantidad += 1
+            carrito.save()
+            
+            return JsonResponse({"success": True, "mensaje": "Producto agregado correctamente"})
+        except Producto.DoesNotExist:
+            return JsonResponse({"success": False, "mensaje": "Producto no encontrado"})
+
+    return JsonResponse({"success": False, "mensaje": "Método no permitido"})
+
+@login_required
+def ver_carrito(request):
+    carrito, _ = Carrito.objects.get_or_create(usuario=request.user)
+    items = carrito.items.all()
+    return render(request, 'pedidos/carrito.html', {'items': items})
+
+@login_required
+def eliminar_del_carrito(request, item_id):
+    item = get_object_or_404(ItemCarrito, id=item_id, carrito__usuario=request.user)
+    item.delete()
+    return redirect('pedidos:ver_carrito')
