@@ -1,19 +1,30 @@
 {% extends 'pedidos/base.html' %}
+
 {% block content %}
 <div class="container mt-4">
     <h2 class="text-center">Menú de Productos</h2>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card">
-                <img src="/static/pedidos/img/placeholder.jpg" class="card-img-top" alt="Producto">
-                <div class="card-body">
-                    <h5 class="card-title">Producto 1</h5>
-                    <p class="card-text">Descripción del producto.</p>
-                    <a href="#" class="btn btn-success">Ordenar</a>
-                </div>
+
+    {% if productos_por_vendedor %}
+        {% for vendedor, productos in productos_por_vendedor.items %}
+            <h3>Vendedor: {{ vendedor }}</h3>  <!-- 🔹 Asegura que se muestre el nombre del vendedor -->
+            <div class="row">
+                {% for producto in productos %}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ producto.nombre }}</h5>
+                                <p class="card-text">{{ producto.descripcion }}</p>
+                                <p><strong>Precio:</strong> ${{ producto.precio }}</p>
+                                <p><strong>Vendedor:</strong> {{ vendedor }}</p>
+                                <a href="#" class="btn btn-success">Ordenar</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        </div>
-        <!-- Puedes duplicar este bloque para más productos -->
-    </div>
+        {% endfor %}
+    {% else %}
+        <p>No hay productos disponibles.</p>  <!-- 🔹 Esto solo debe verse si `productos_por_vendedor` está vacío -->
+    {% endif %}
 </div>
 {% endblock %}

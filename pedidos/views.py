@@ -1,19 +1,28 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
-from .models import Producto
+from .models import Producto, User
 from .forms import ProductoForm
 from django.contrib.auth import authenticate, login, logout
 from .forms import RegistroUsuarioForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from collections import defaultdict
 
 def index(request):
     """ Página principal de Poliexpress """
     return render(request, 'pedidos/index.html')
 
 def menu(request):
-    """ Página del menú de productos """
-    return render(request, 'pedidos/menu.html')
+    productos_por_vendedor = defaultdict(list)
+
+    productos = Producto.objects.select_related('vendedor').all()
+    print("Productos en la base de datos:", productos)  # 🔍 Verificación en la consola
+
+    for producto in productos:
+        if producto.vendedor:
+            productos_por_vendedor[producto.vendedor.username].append(producto)
+        print("Diccionario de productos por vendedor:", productos_por_vendedor)
+    return render(request, 'pedidos/menu.html', {'productos_por_vendedor': productos_por_vendedor})
 
 def lista_productos(request):
     """ Muestra todos los productos disponibles """
@@ -25,13 +34,16 @@ def detalle_producto(request, producto_id):
     producto = get_object_or_404(Producto, pk=producto_id)
     return render(request, 'pedidos/detalle_producto.html', {'producto': producto})
 
+@login_required
 def crear_producto(request):
     """ Crea un nuevo producto en el sistema """
     if request.method == "POST":
-        form = ProductoForm(request.POST, request.FILES)  # Manejo de archivos
+        form = ProductoForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect(reverse('pedidos:lista_productos'))  # Usar reverse para mayor seguridad
+            producto = form.save(commit=False)
+            producto.vendedor = request.user  # Asigna el usuario autenticado como vendedor
+            producto.save()
+            return redirect(reverse('pedidos:lista_productos'))
     else:
         form = ProductoForm()
     return render(request, 'pedidos/form_producto.html', {'form': form, 'modo': 'crear'})
