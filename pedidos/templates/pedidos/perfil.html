@@ -1,16 +1,68 @@
 {% extends 'pedidos/base.html' %}
 
 {% block content %}
-<div class="container">
-    <h1 class="mt-4">Mi Perfil</h1>
-    <div class="card p-3 mt-3">
-        <p><strong>Usuario:</strong> {{ user.username }}</p>
-        <p><strong>Correo:</strong> {{ user.email }}</p>
-        {% if user.perfil %}
-            <p><strong>Rol:</strong> {{ user.perfil.rol }}</p>
-        {% endif %}
+<div class="container mt-4">
+  <div class="row">
+    <!-- Sidebar de navegación -->
+    <div class="col-md-3 mb-3">
+      <div class="card text-center p-3">
+        <div class="mb-2">
+          <div class="rounded-circle bg-danger text-white d-flex justify-content-center align-items-center" style="width: 60px; height: 60px; font-size: 24px; margin: auto;">
+            {{ user.first_name|slice:":1" }}
+          </div>
+        </div>
+        <h5 class="mb-0">{{ user.first_name }}</h5>
+        <p class="text-muted">Mi perfil</p>
+      </div>
     </div>
 
-    <a href="{% url 'pedidos:logout' %}" class="btn btn-danger mt-3">Cerrar Sesión</a>
+    <!-- Contenido de perfil -->
+    <div class="col-md-9">
+      <div class="card p-4">
+        <h5 class="mb-4">Información de tu cuenta</h5>
+
+        <form method="POST" action="">
+          {% csrf_token %}
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label>Nombre(s)</label>
+              <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}">
+            </div>
+            <div class="col-md-6">
+              <label>Apellido(s)</label>
+              <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label>Correo Electrónico</label>
+              <input type="email" class="form-control" name="email" value="{{ user.email }}" readonly>
+            </div>
+            <div class="col-md-6">
+              <label>Celular</label>
+              <input type="text" class="form-control" name="telefono" value="{{ user.perfil.telefono }}">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label>Fecha de nacimiento</label>
+              <input type="date" class="form-control" name="fecha_nacimiento" value="{{ user.perfil.fecha_nacimiento|date:'Y-m-d' }}">
+            </div>
+            <div class="col-md-6">
+              <label>Género</label>
+              <div>
+                <label class="me-3"><input type="radio" name="genero" value="Hombre" {% if user.perfil.genero == "Hombre" %}checked{% endif %}> Hombre</label>
+                <label><input type="radio" name="genero" value="Mujer" {% if user.perfil.genero == "Mujer" %}checked{% endif %}> Mujer</label>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-danger">Actualizar datos</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

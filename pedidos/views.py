@@ -10,6 +10,7 @@ from collections import defaultdict
 from .models import Producto, Carrito, ItemCarrito
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from .models import Perfil
 
 def index(request):
     """ Página principal de Poliexpress """
@@ -103,7 +104,22 @@ def cerrar_sesion(request):
     return redirect('pedidos:index')
 
 @login_required
-def perfil(request):
+def perfil_view(request):
+    if request.method == 'POST':
+        user = request.user
+        perfil = user.perfil
+
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        perfil.telefono = request.POST.get('telefono')
+        perfil.genero = request.POST.get('genero')
+        perfil.fecha_nacimiento = request.POST.get('fecha_nacimiento')
+
+        user.save()
+        perfil.save()
+
+        return redirect('pedidos:perfil')
+
     return render(request, 'pedidos/perfil.html')
 
 @login_required

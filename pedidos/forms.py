@@ -17,6 +17,17 @@ class ProductoForm(forms.ModelForm):
 class RegistroUsuarioForm(UserCreationForm):
     email = forms.EmailField(required=True, help_text="Introduce un correo válido.")
     rol = forms.ChoiceField(choices=Perfil.USUARIO_ROLES, label="Tipo de usuario")
+    telefono = forms.CharField(required=False, max_length=20, label="Teléfono")
+    genero = forms.ChoiceField(
+        choices=[('', 'Seleccione'), ('masculino', 'Masculino'), ('femenino', 'Femenino'), ('otro', 'Otro')],
+        required=False,
+        label="Género"
+    )
+    fecha_nacimiento = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        label="Fecha de nacimiento"
+    )
 
     class Meta:
         model = User
@@ -26,5 +37,11 @@ class RegistroUsuarioForm(UserCreationForm):
         user = super().save(commit=False)
         if commit:
             user.save()
-            Perfil.objects.create(user=user, rol=self.cleaned_data['rol'])
+            Perfil.objects.create(
+                user=user,
+                rol=self.cleaned_data['rol'],
+                telefono=self.cleaned_data.get('telefono'),
+                genero=self.cleaned_data.get('genero'),
+                fecha_nacimiento=self.cleaned_data.get('fecha_nacimiento'),
+            )
         return user

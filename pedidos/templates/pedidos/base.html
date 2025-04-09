@@ -4,71 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poliexpress</title>
+
+    <!-- Estilos locales -->
     <link rel="stylesheet" href="/static/pedidos/css/styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Barra de navegación -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'pedidos:index' %}">Poliexpress</a>
-            
-            <!-- Botón para cambiar a modo oscuro -->
-            <button id="toggle-dark" class="floating-btn">🌙</button>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'pedidos:index' %}">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'pedidos:menu' %}">Menú</a></li>
-
-                    <!-- Mostrar "Nuevo Producto" solo a vendedores -->
-                    {% if user.is_authenticated and user.perfil.rol == "vendedor" %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'pedidos:crear_producto' %}">➕ Nuevo Producto</a></li>
-                    {% endif %}
-
-                    <!-- Carrito de compras -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'pedidos:carrito' %}">
-                            🛒 Carrito <span id="contador-carrito" class="badge bg-danger">0</span>
-                        </a>
-                    </li>
-
-                    <!-- Menú de usuario -->
-                    {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                👤 {{ user.username }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{% url 'pedidos:perfil' %}">Mi Perfil</a></li>
-                                <li><a class="dropdown-item" href="{% url 'pedidos:logout' %}">Cerrar Sesión</a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'pedidos:login' %}">Iniciar Sesión</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'pedidos:registro' %}">Registrarse</a></li>
-                    {% endif %}
-                </ul>
-            </div>
+<!-- Navbar moderna estilo Rappi en modo oscuro con menú hamburguesa -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
+    <div class="container-fluid px-4 py-2">
+  
+      <!-- Botón hamburguesa -->
+      <button class="navbar-toggler border-0 me-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <!-- Logo Poliexpress -->
+      <a class="navbar-brand fw-bold me-4 text-light" href="{% url 'pedidos:index' %}">Poliexpress</a>
+  
+      <!-- Ubicación -->
+      <div class="d-none d-md-flex align-items-center me-4 text-white-50">
+        <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+        <span class="fw-semibold">Medellín</span>
+        <i class="bi bi-caret-down-fill ms-1"></i>
+      </div>
+  
+      <!-- Contenido colapsable -->
+      <div class="collapse navbar-collapse" id="navbarContent">
+  
+        <!-- Buscador -->
+        <form class="d-flex flex-grow-1 me-4 mt-2 mt-lg-0" method="get" action="{% url 'pedidos:menu' %}">
+          <input class="form-control form-control-sm rounded-pill px-4 me-2" type="search" name="q" placeholder="Buscar productos, tiendas, snacks..." aria-label="Buscar">
+          <button class="btn btn-outline-light btn-sm" type="submit">🔍</button>
+        </form>
+  
+        <!-- Usuario y Carrito (en collapse también) -->
+        <div class="d-flex align-items-center flex-column flex-lg-row mt-3 mt-lg-0">
+          <!-- Carrito -->
+          <a class="btn btn-outline-light btn-sm me-lg-3 mb-2 mb-lg-0" href="{% url 'pedidos:carrito' %}">
+            <i class="bi bi-cart"></i>
+            <span class="d-lg-inline">Carrito</span>
+            <span id="contador-carrito" class="badge bg-danger">0</span>
+          </a>
+  
+          <!-- Usuario autenticado -->
+          {% if user.is_authenticated %}
+          <div class="dropdown">
+            <a class="btn btn-outline-light btn-sm dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle me-1"></i> {{ user.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'pedidos:perfil' %}">Mi Perfil</a></li>
+              {% if user.perfil.rol == "vendedor" %}
+              <li><a class="dropdown-item" href="/vendedor/pedidos/producto/">➕ Mis Productos</a></li>
+              {% endif %}
+              <li><a class="dropdown-item" href="{% url 'pedidos:logout' %}">Cerrar Sesión</a></li>
+            </ul>
+          </div>
+          {% else %}
+          <a class="btn btn-outline-light btn-sm me-lg-2 mb-2 mb-lg-0" href="{% url 'pedidos:login' %}">Iniciar Sesión</a>
+          <a class="btn btn-outline-light btn-sm" href="{% url 'pedidos:registro' %}">Registrarse</a>
+          {% endif %}
         </div>
-    </nav>
-    
-    <!-- Contenido principal -->
-    <div class="container mt-4">
-        {% block content %}{% endblock %}
+  
+      </div>
     </div>
+  </nav>
+  
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-5">
-        <p>&copy; 2025 Poliexpress - Todos los derechos reservados.</p>
-        <p><a href="/terminos" class="text-white">Términos y condiciones</a> | <a href="/privacidad" class="text-white">Política de privacidad</a></p>
-    </footer>
+<!-- Contenido principal -->
+<main class="container mt-4">
+    {% block content %}{% endblock %}
+</main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/static/pedidos/js/scripts.js"></script>
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    <p class="mb-1">&copy; 2025 Poliexpress - Todos los derechos reservados.</p>
+    <p class="mb-0">
+        <a href="/terminos" class="text-white text-decoration-none">Términos</a> |
+        <a href="/privacidad" class="text-white text-decoration-none">Privacidad</a>
+    </p>
+</footer>
+
+<!-- Scripts Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Scripts propios -->
+<script src="/static/pedidos/js/scripts.js"></script>
+
 </body>
 </html>
