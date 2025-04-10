@@ -1,108 +1,109 @@
-/* ======= Navbar ======= */
+/* Navbar principal */
 .navbar {
-    background: #333; /* Color oscuro */
+    background: #333;
     padding: 10px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-
-/* Estilo del logo */
-.navbar .navbar-brand {
-    font-size: 1.5rem;
+  }
+  
+  /* Logo con fuente llamativa */
+  .navbar .navbar-brand {
+    font-size: 1.8rem;
     font-weight: bold;
     color: white;
     text-decoration: none;
     transition: color 0.3s ease-in-out;
-}
-
-.navbar .navbar-brand:hover {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px;
+  }
+  
+  .navbar .navbar-brand:hover {
     color: #007bff;
-}
-
-/* Contenedor de los botones de navegación */
-.navbar .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-/* Botones de la navbar */
-.navbar .btn {
+  }
+  
+  /* Botones sin bordes */
+  .navbar .btn {
     background: transparent;
     color: white;
-    border-radius: 5px;
     padding: 8px 15px;
     font-size: 1rem;
     transition: all 0.3s ease-in-out;
-    border: 1px solid white;
     text-decoration: none;
-}
-
-.navbar .btn:hover {
+    border: none;
+    box-shadow: none;
+  }
+  
+  .navbar .btn:hover {
     background: #444;
     color: #fff;
-    border-color: #007bff;
-}
-
-/* Estilo del menú desplegable */
-.navbar .dropdown-menu {
+  }
+  
+  /* Input de búsqueda sin borde */
+  .navbar input.form-control.border-0 {
+    box-shadow: none;
+    border: none;
+  }
+  
+  /* Menú desplegable */
+  .navbar .dropdown-menu {
     background: #222;
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     padding: 10px;
-}
-
-.navbar .dropdown-item {
+  }
+  
+  .navbar .dropdown-item {
     color: white;
     padding: 10px;
     transition: background 0.3s;
     text-decoration: none;
     display: block;
-}
-
-.navbar .dropdown-item:hover {
+  }
+  
+  .navbar .dropdown-item:hover {
     background: #007bff;
-}
-
-/* Responsividad */
-@media (max-width: 768px) {
+  }
+  
+  /* Responsivo */
+  @media (max-width: 768px) {
     .navbar {
-        flex-direction: column;
-        align-items: flex-start;
+      flex-direction: column;
+      align-items: flex-start;
     }
-
+  
     .nav-links {
-        flex-direction: column;
-        width: 100%;
-        margin-top: 10px;
+      flex-direction: column;
+      width: 100%;
+      margin-top: 10px;
     }
-
+  
     .nav-links .btn {
-        width: 100%;
-        text-align: center;
+      width: 100%;
+      text-align: center;
     }
+  
     .navbar-scroll {
-        background-color: #333 !important;
-        transition: background-color 0.3s ease-in-out;
+      background-color: #333 !important;
+      transition: background-color 0.3s ease-in-out;
     }
-
-}
-    /* .dark mode */
-    .floating-btn {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #333;
-        color: white;
-        border: none;
-        padding: 10px;
-        border-radius: 50%;
-        cursor: pointer;
-        transition: background 0.3s ease-in-out;
-    }
-    
-    .floating-btn:hover {
-        background: #555;
-    }
-    
+  }
+  
+  /* Botón flotante opcional */
+  .floating-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #333;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .floating-btn:hover {
+    background: #555;
+  }
+  
