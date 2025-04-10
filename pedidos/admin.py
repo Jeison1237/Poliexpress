@@ -8,7 +8,6 @@ from .models import Producto, Perfil, Carrito, ItemCarrito
 # ----------------------------
 # PERFIL INLINE (vinculado a User)
 # ----------------------------
-
 class PerfilInline(admin.StackedInline):
     model = Perfil
     can_delete = False
@@ -18,7 +17,6 @@ class PerfilInline(admin.StackedInline):
 # ----------------------------
 # CUSTOM USER ADMIN (con Perfil incluido)
 # ----------------------------
-
 class UserAdmin(BaseUserAdmin):
     inlines = (PerfilInline,)
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_rol')
@@ -28,20 +26,23 @@ class UserAdmin(BaseUserAdmin):
         return obj.perfil.rol if hasattr(obj, 'perfil') else 'Sin perfil'
     get_rol.short_description = 'Rol'
 
-# Desregistramos el admin original y registramos el nuevo
+# Reemplazar el UserAdmin por uno extendido
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
 # ----------------------------
 # PRODUCTO ADMIN
 # ----------------------------
-
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'precio', 'disponible', 'vendedor', 'imagen_preview')
+    list_display = ('nombre', 'precio_formateado', 'disponible', 'vendedor', 'imagen_preview')
     list_filter = ('disponible', 'vendedor')
     search_fields = ('nombre', 'descripcion')
-    list_editable = ('precio', 'disponible')
+    list_editable = ('disponible',)
+
+    def precio_formateado(self, obj):
+        return "${:.2f}".format(float(obj.precio))
+    precio_formateado.short_description = "Precio"
 
     def imagen_preview(self, obj):
         if obj.imagen:
@@ -52,7 +53,6 @@ class ProductoAdmin(admin.ModelAdmin):
 # ----------------------------
 # PERFIL ADMIN (opcional)
 # ----------------------------
-
 @admin.register(Perfil)
 class PerfilAdmin(admin.ModelAdmin):
     list_display = ('user', 'rol', 'telefono')
@@ -62,7 +62,6 @@ class PerfilAdmin(admin.ModelAdmin):
 # ----------------------------
 # ITEMCARRITO INLINE PARA CARRITO
 # ----------------------------
-
 class ItemCarritoInline(admin.TabularInline):
     model = ItemCarrito
     extra = 0
@@ -70,16 +69,14 @@ class ItemCarritoInline(admin.TabularInline):
 # ----------------------------
 # CARRITO ADMIN
 # ----------------------------
-
 @admin.register(Carrito)
 class CarritoAdmin(admin.ModelAdmin):
     list_display = ('usuario',)
     inlines = [ItemCarritoInline]
 
 # ----------------------------
-# ITEMCARRITO ADMIN (opcional por separado)
+# ITEMCARRITO ADMIN
 # ----------------------------
-
 @admin.register(ItemCarrito)
 class ItemCarritoAdmin(admin.ModelAdmin):
     list_display = ('producto', 'carrito', 'cantidad')

@@ -1,32 +1,29 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
-from .models import Producto, User
 from .forms import ProductoForm
 from django.contrib.auth import authenticate, login, logout
 from .forms import RegistroUsuarioForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from collections import defaultdict
-from .models import Producto, Carrito, ItemCarrito
+from .models import Producto, Carrito, ItemCarrito, Perfil, User
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from .models import Perfil
-
+from .utils import obtener_o_crear_carrito
 def index(request):
     """ Página principal de Poliexpress """
     return render(request, 'pedidos/index.html')
 
 def menu(request):
+    productos = Producto.objects.filter(disponible=True).select_related('vendedor')
+
     productos_por_vendedor = defaultdict(list)
-
-    productos = Producto.objects.select_related('vendedor').all()
-    print("Productos en la base de datos:", productos)  # 🔍 Verificación en la consola
-
     for producto in productos:
-        if producto.vendedor:
-            productos_por_vendedor[producto.vendedor.username].append(producto)
-        print("Diccionario de productos por vendedor:", productos_por_vendedor)
-    return render(request, 'pedidos/menu.html', {'productos_por_vendedor': productos_por_vendedor})
+        vendedor = producto.vendedor
+        nombre_vendedor = f"{vendedor.first_name} {vendedor.last_name}".strip() or vendedor.username
+        productos_por_vendedor[nombre_vendedor].append(producto)
+
+    return render(request, 'pedidos/menu.html', {'productos_por_vendedor': dict(productos_por_vendedor)})
 
 def lista_productos(request):
     """ Muestra todos los productos disponibles """
@@ -123,31 +120,58 @@ def perfil_view(request):
     return render(request, 'pedidos/perfil.html')
 
 @login_required
-@csrf_exempt
-def agregar_al_carrito(request):
-    if request.method == "POST":
-        producto_id = request.POST.get("producto_id")
-        
-        try:
-            producto = Producto.objects.get(id=producto_id)
-            carrito, creado = Carrito.objects.get_or_create(usuario=request.user, producto=producto)
-            carrito.cantidad += 1
-            carrito.save()
-            
-            return JsonResponse({"success": True, "mensaje": "Producto agregado correctamente"})
-        except Producto.DoesNotExist:
-            return JsonResponse({"success": False, "mensaje": "Producto no encontrado"})
+def agregar_al_carrito(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+    carrito = obtener_o_crear_carrito(request.user)
 
-    return JsonResponse({"success": False, "mensaje": "Método no permitido"})
+    item, creado = ItemCarrito.objects.get_or_create(
+        carrito=carrito,
+        producto=producto,
+        defaults={'cantidad': 1}
+    )
 
-@login_required
+    if not creado:
+        item.cantidad += 1
+        item.save()
+
+    return redirect('pedidos:ver_carrito')
 def ver_carrito(request):
-    carrito, _ = Carrito.objects.get_or_create(usuario=request.user)
-    items = carrito.items.all()
-    return render(request, 'pedidos/carrito.html', {'items': items})
+    carrito = obtener_o_crear_carrito(request.user)
+    items = ItemCarrito.objects.filter(carrito=carrito)
+
+    for item in items:
+        item.subtotal = item.producto.precio * item.cantidad
+
+    total = sum(item.subtotal for item in items)
+    return render(request, 'pedidos/carrito.html', {'items': items, 'total': total})
 
 @login_required
 def eliminar_del_carrito(request, item_id):
     item = get_object_or_404(ItemCarrito, id=item_id, carrito__usuario=request.user)
     item.delete()
     return redirect('pedidos:ver_carrito')
+
+@login_required
+def actualizar_cantidad(request, item_id):
+    item = get_object_or_404(ItemCarrito, id=item_id, carrito__usuario=request.user)
+
+    if request.method == 'POST':
+        accion = request.POST.get('action')
+        if accion == 'incrementar':
+            item.cantidad += 1
+        elif accion == 'decrementar' and item.cantidad > 1:
+            item.cantidad -= 1
+        item.save()
+
+    # 🔧 Obtenemos todos los items del carrito después de la actualización
+    carrito = item.carrito
+    items = ItemCarrito.objects.filter(carrito=carrito)
+
+    # 🔧 Calculamos el subtotal de cada item
+    for i in items:
+        i.subtotal = i.producto.precio * i.cantidad
+
+    total = sum(i.subtotal for i in items)
+
+    return render(request, 'pedidos/carrito.html', {'items': items, 'total': total})
+

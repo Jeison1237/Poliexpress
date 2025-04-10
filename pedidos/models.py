@@ -26,7 +26,7 @@ class Producto(models.Model):
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     disponible = models.BooleanField(default=True)
     vendedor = models.ForeignKey(User, on_delete=models.CASCADE)
-    imagen = models.ImageField(upload_to='productos/', blank=True, null=True)
+    imagen = models.ImageField(upload_to='', null=True, blank=True)
 
     def __str__(self):
         return f"{self.nombre} - {self.vendedor.username}"

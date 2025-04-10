@@ -1,5 +1,5 @@
 {% extends 'pedidos/base.html' %}
-
+{% load static %}
 {% block content %}
 <div class="container mt-4">
     <h2 class="text-center">Menú de Productos</h2>
@@ -9,17 +9,23 @@
             <h3>Vendedor: {{ vendedor }}</h3>  <!-- 🔹 Asegura que se muestre el nombre del vendedor -->
             <div class="row">
                 {% for producto in productos %}
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ producto.nombre }}</h5>
-                                <p class="card-text">{{ producto.descripcion }}</p>
-                                <p><strong>Precio:</strong> ${{ producto.precio }}</p>
-                                <p><strong>Vendedor:</strong> {{ vendedor }}</p>
-                                <a href="#" class="btn btn-success">Ordenar</a>
-                            </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        {% if producto.imagen %}
+                        <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}"
+     style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ producto.nombre }}</h5>
+                            <p class="card-text">{{ producto.descripcion }}</p>
+                            <p><strong>Precio:</strong> ${{ producto.precio }}</p>
+                            <p><strong>Vendedor:</strong> {{ vendedor }}</p>
+                            <button class="ordenar-btn btn btn-success" data-id="{{ producto.id }}">
+                                🛒 Ordenar
+                            </button>
                         </div>
                     </div>
+                </div>
                 {% endfor %}
             </div>
         {% endfor %}
@@ -27,4 +33,23 @@
         <p>No hay productos disponibles.</p>  <!-- 🔹 Esto solo debe verse si `productos_por_vendedor` está vacío -->
     {% endif %}
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("✅ Script cargado correctamente");
+    
+        const botones = document.querySelectorAll('.ordenar-btn');
+        botones.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const productoId = btn.dataset.id;
+                console.log("🛒 Agregando producto con ID:", productoId);
+                if (productoId) {
+                    window.location.href = `/pedidos/agregar_al_carrito/${productoId}/`;
+                }
+            });
+        });
+    });
+    </script>
 {% endblock %}
+
+
+

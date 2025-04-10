@@ -15,6 +15,10 @@ urlpatterns = [
 
     # Carrito de compras
     path('carrito/', views.carrito, name='carrito'),
+    path('agregar_al_carrito/<int:producto_id>/', views.agregar_al_carrito, name='agregar_al_carrito'),  # ✅ Esta era la que faltaba
+    path('carrito/ver/', views.ver_carrito, name='ver_carrito'),
+    path('carrito/eliminar/<int:item_id>/', views.eliminar_del_carrito, name='eliminar_del_carrito'),
+    path('carrito/actualizar/<int:item_id>/', views.actualizar_cantidad, name='actualizar_cantidad'),
     
     # Manejo de usuarios
     path('perfil/', views.perfil_view, name='perfil'),
@@ -22,5 +26,6 @@ urlpatterns = [
     path('login/', views.iniciar_sesion, name='login'),
     path('logout/', views.cerrar_sesion, name='logout'),
     
+    # Admin personalizado para vendedores
     path('vendedor/', vendedor_site.urls),
 ]

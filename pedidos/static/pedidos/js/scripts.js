@@ -55,41 +55,15 @@ document.addEventListener("DOMContentLoaded", function () {
             contadorCarrito.textContent = totalItems;
         }
     }
-
-    function agregarAlCarrito(id) {
-        fetch("/agregar_al_carrito/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "X-CSRFToken": getCookie("csrftoken") // Necesario en Django para seguridad
-            },
-            body: `producto_id=${id}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert("Producto agregado al carrito");
-            } else {
-                alert("Error al agregar al carrito");
-            }
-        })
-        .catch(error => console.error("Error:", error));
-    }
-    
-    // Función para obtener CSRF token (Django lo usa para seguridad en POST requests)
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== "") {
-            let cookies = document.cookie.split(";");
-            for (let i = 0; i < cookies.length; i++) {
-                let cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + "=")) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".ordenar-btn").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const id = this.getAttribute("data-id");
+                if (id) {
+                    // Redirige a la URL Django que maneja el agregado
+                    window.location.href = `/pedidos/agregar_al_carrito/${id}/`;
                 }
-            }
-        }
-        return cookieValue;
-    }
-    
+            });
+        });
+    });
 });
