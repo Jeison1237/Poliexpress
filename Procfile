@@ -1,1 +1,1 @@
-web: gunicorn proyectoppi.wsgi
+web: gunicorn ProyectoPPI.wsgi
