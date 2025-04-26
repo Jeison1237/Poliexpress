@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-x*w=ujy-wv88i%ehm#$z2=wg79-o@wkkwa@a!zy+0)3pal!l$e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['poliexpress-f38cc76275ef.herokuapp.com']
+ALLOWED_HOSTS = ['poliexpress-f38cc76275ef.herokuapp.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -43,12 +43,14 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'ProyectoPPI.urls'
@@ -77,10 +79,10 @@ WSGI_APPLICATION = 'ProyectoPPI.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd51imlot2ubv4t',
+        'NAME': 'd898kgko1ugnsd',
         'USER': 'ud5blesmu2p5sm',
-        'PASSWORD': 'pecdcc9b3631bb3fe73049a0f18e97b35398be319bdbe6cb1d49e5a162ce7677c',
-        'HOST': 'ca932070ke6bv1.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',
+        'PASSWORD': 'p27da6b743c17fe4259f5e47061ae9e9ee46a43b378fbaefcc2e4938a5290a6b6',
+        'HOST': 'ca4dasrmff8run.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',
         'PORT': '5432',
     }
 }
