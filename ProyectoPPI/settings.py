@@ -81,7 +81,10 @@ DATABASES = {
         'USER': 'ud5blesmu2p5sm',
         'PASSWORD': 'pecdcc9b3631bb3fe73049a0f18e97b35398be319bdbe6cb1d49e5a162ce7677c',
         'HOST': 'ca932070ke6bv1.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',
-        'PORT': '5432'
+        'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require'  # 👈 Necesario para conexión segura en Heroku y AWS
+        }
     }
 }
 
