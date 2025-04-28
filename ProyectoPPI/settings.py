@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'ProyectoPPI.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd898kgko1ugnsd',
+        'NAME': 'd9ovpcg0qafvma',
         'USER': 'ud5blesmu2p5sm',
-        'PASSWORD': 'p27da6b743c17fe4259f5e47061ae9e9ee46a43b378fbaefcc2e4938a5290a6b6',
-        'HOST': 'ca4dasrmff8run.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',
+        'PASSWORD': 'p5cc2c42a4659274774ecea7814ddfa22a31495eae4feb6f1e1b3d4cbbced92bf',
+        'HOST': 'c229h9evb9laqg.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',
         'PORT': '5432',
     }
 }
