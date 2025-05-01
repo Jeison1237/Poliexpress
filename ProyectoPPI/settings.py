@@ -141,7 +141,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'poliexpress',
+    'CLOUD_NAME': 'dldjmznqc',
     'API_KEY': '643898297659593',
     'API_SECRET': 'fS-QB4H9bnLC5jEPcibWP0DEpN0',
 }
