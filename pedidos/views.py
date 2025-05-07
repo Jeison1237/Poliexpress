@@ -12,7 +12,10 @@ from django.http import JsonResponse
 from .utils import obtener_o_crear_carrito
 def index(request):
     """ Página principal de Poliexpress """
-    return render(request, 'pedidos/index.html')
+    # Obtén todos los productos disponibles
+    productos = Producto.objects.filter(disponible=True)
+
+    return render(request, 'pedidos/index.html', {'productos': productos})
 
 def menu(request):
     productos = Producto.objects.filter(disponible=True).select_related('vendedor')
@@ -143,7 +146,14 @@ def ver_carrito(request):
         item.subtotal = item.producto.precio * item.cantidad
 
     total = sum(item.subtotal for item in items)
-    return render(request, 'pedidos/carrito.html', {'items': items, 'total': total})
+
+    # Aquí mostramos el estado y la fecha de creación
+    return render(request, 'pedidos/carrito.html', {
+        'items': items,
+        'total': total,
+        'estado': carrito.estado,  # Muestra el estado del carrito
+        'fecha_creacion': carrito.fecha_creacion  # Muestra la fecha de creación
+    })
 
 @login_required
 def eliminar_del_carrito(request, item_id):

@@ -1,27 +1,33 @@
 {% extends 'pedidos/base.html' %}
 {% load static %}
+
 {% block content %}
-<div class="container mt-4">
-    <h2 class="text-center">Menú de Productos</h2>
+<div class="container mt-5">
+    <h2 class="text-center mb-5">🍽️ <strong>Menú de Productos</strong></h2>
 
     {% if productos_por_vendedor %}
         {% for vendedor, productos in productos_por_vendedor.items %}
-            <h3>Vendedor: {{ vendedor }}</h3>  <!-- 🔹 Asegura que se muestre el nombre del vendedor -->
+            <h4 class="mb-4 text-primary">👤 Vendedor: {{ vendedor }}</h4>
             <div class="row">
                 {% for producto in productos %}
-                <div class="col-md-4">
-                    <div class="card">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow border-0 rounded-4">
                         {% if producto.imagen %}
-                        <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}"
-     style="height: 200px; object-fit: cover;">
+                        <img src="{{ producto.imagen.url }}" 
+                             class="card-img-top rounded-top" 
+                             alt="Imagen de {{ producto.nombre }}" 
+                             style="height: 200px; object-fit: cover;">
                         {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title">{{ producto.nombre }}</h5>
-                            <p class="card-text">{{ producto.descripcion }}</p>
-                            <p><strong>Precio:</strong> ${{ producto.precio }}</p>
-                            <p><strong>Vendedor:</strong> {{ vendedor }}</p>
-                            <button class="ordenar-btn btn btn-success" data-id="{{ producto.id }}">
-                                🛒 Ordenar
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold text-dark">{{ producto.nombre }}</h5>
+                            <p class="card-text text-muted" style="min-height: 60px;">
+                                {{ producto.descripcion|truncatechars:100 }}
+                            </p>
+                            <p class="mb-1"><strong>💲 Precio:</strong> ${{ producto.precio }}</p>
+                            <p class="mb-3"><strong>🛍️ Vendedor:</strong> {{ vendedor }}</p>
+                            <button class="ordenar-btn btn btn-success mt-auto w-100 py-2 rounded-pill" 
+                                    data-id="{{ producto.id }}">
+                                🛒 Ordenar ahora
                             </button>
                         </div>
                     </div>
@@ -30,26 +36,27 @@
             </div>
         {% endfor %}
     {% else %}
-        <p>No hay productos disponibles.</p>  <!-- 🔹 Esto solo debe verse si `productos_por_vendedor` está vacío -->
+        <div class="alert alert-info text-center mt-5">
+            🚫 No hay productos disponibles en este momento.
+        </div>
     {% endif %}
 </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        console.log("✅ Script cargado correctamente");
-    
-        const botones = document.querySelectorAll('.ordenar-btn');
-        botones.forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                const productoId = btn.dataset.id;
-                console.log("🛒 Agregando producto con ID:", productoId);
-                if (productoId) {
-                    window.location.href = `/pedidos/agregar_al_carrito/${productoId}/`;
-                }
-            });
-        });
-    });
-    </script>
 {% endblock %}
 
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("✅ Script cargado correctamente");
 
-
+    document.querySelectorAll('.ordenar-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const productoId = btn.dataset.id;
+            console.log("🛒 Agregando producto con ID:", productoId);
+            if (productoId) {
+                window.location.href = `/pedidos/agregar_al_carrito/${productoId}/`;
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

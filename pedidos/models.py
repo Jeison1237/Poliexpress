@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Perfil(models.Model):
     ROL_CLIENTE = 'cliente'
     ROL_VENDEDOR = 'vendedor'
@@ -28,15 +29,25 @@ class Producto(models.Model):
     vendedor = models.ForeignKey(User, on_delete=models.CASCADE)
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
 
+
     def __str__(self):
         return f"{self.nombre} - {self.vendedor.username}"
 
 
 class Carrito(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    ESTADO_CARRITO = [
+        ('pendiente', 'Pendiente'),
+        ('en_proceso', 'En Proceso'),
+        ('pagado', 'Pagado'),
+    ]
+    estado = models.CharField(max_length=20, choices=ESTADO_CARRITO, default='pendiente')
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Carrito de {self.usuario.username}"
+        return f"Carrito de {self.usuario.username} - Estado: {self.estado}"
 
 
 class ItemCarrito(models.Model):
