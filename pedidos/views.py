@@ -6,10 +6,11 @@ from .forms import RegistroUsuarioForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from collections import defaultdict
-from .models import Producto, Carrito, ItemCarrito, Perfil, User
+from .models import Producto, Carrito, ItemCarrito, Perfil, Pedido, Mensaje
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from .utils import obtener_o_crear_carrito
+from django.contrib import messages
 def index(request):
     """ Página principal de Poliexpress """
     # Obtén todos los productos disponibles
@@ -147,12 +148,12 @@ def ver_carrito(request):
 
     total = sum(item.subtotal for item in items)
 
-    # Aquí mostramos el estado y la fecha de creación
     return render(request, 'pedidos/carrito.html', {
         'items': items,
+        'carrito': carrito,  # Añade esta línea
         'total': total,
-        'estado': carrito.estado,  # Muestra el estado del carrito
-        'fecha_creacion': carrito.fecha_creacion  # Muestra la fecha de creación
+        'estado': carrito.estado,
+        'fecha_creacion': carrito.fecha_creacion
     })
 
 @login_required
@@ -183,5 +184,80 @@ def actualizar_cantidad(request, item_id):
 
     total = sum(i.subtotal for i in items)
 
-    return render(request, 'pedidos/carrito.html', {'items': items, 'total': total})
+    # 🔧 CAMBIO AQUÍ: Incluir el carrito y sus propiedades en el contexto
+    return render(request, 'pedidos/carrito.html', {
+        'items': items, 
+        'total': total,
+        'carrito': carrito,                # Añadir el objeto carrito
+        'estado': carrito.estado,          # Añadir el estado del carrito
+        'fecha_creacion': carrito.fecha_creacion  # Añadir la fecha de creación
+    })
 
+@login_required
+def ver_mensajes(request, pedido_id):
+    # Obtener el pedido
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    
+    # Asegurarse de que el usuario sea el cliente o el vendedor del pedido
+    if request.user != pedido.cliente and request.user != pedido.vendedor:
+        return JsonResponse({'error': 'No tienes permiso para ver este pedido'}, status=403)
+
+    # Obtener los mensajes relacionados con este pedido
+    mensajes = Mensaje.objects.filter(pedido=pedido).order_by('fecha_envio')
+    return render(request, 'pedidos/ver_mensajes.html', {'pedido': pedido, 'mensajes': mensajes})
+
+@login_required
+def enviar_mensaje(request, pedido_id):
+    if request.method == 'POST':
+        contenido = request.POST.get('contenido')
+        pedido = get_object_or_404(Pedido, id=pedido_id)
+
+        # Asegurarse de que el mensaje sea enviado por el cliente o el vendedor del pedido
+        if request.user != pedido.cliente and request.user != pedido.vendedor:
+            return JsonResponse({'error': 'No tienes permiso para enviar mensajes en este pedido'}, status=403)
+
+        # Determinar quién es el receptor
+        receptor = pedido.vendedor if request.user == pedido.cliente else pedido.cliente
+
+        # Crear el mensaje
+        mensaje = Mensaje.objects.create(
+            pedido=pedido,
+            emisor=request.user,
+            receptor=receptor,
+            contenido=contenido
+        )
+
+        return JsonResponse({'mensaje': 'Mensaje enviado', 'contenido': contenido})
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+@login_required
+def proceder_pago(request, carrito_id):
+    carrito = get_object_or_404(Carrito, id=carrito_id, usuario=request.user)
+
+    # Tomar el primer producto del carrito para obtener al vendedor
+    primer_item = carrito.items.first()
+    if not primer_item:
+        return redirect('pedidos:ver_carrito')
+
+    producto = primer_item.producto
+    vendedor_user = producto.vendedor  # Esto es un objeto User
+    
+    # Obtener el perfil del vendedor
+    try:
+        vendedor_perfil = vendedor_user.perfil  # Acceder al perfil asociado
+    except Perfil.DoesNotExist:
+        # Manejar el caso donde el vendedor no tiene un perfil
+        messages.error(request, "El vendedor no tiene un perfil configurado.")
+        return redirect('pedidos:ver_carrito')
+    
+    # Crear el pedido con el perfil del vendedor
+    pedido = Pedido.objects.create(
+        cliente=request.user,
+        vendedor=vendedor_perfil,  # Ahora usamos el perfil
+        carrito=carrito,
+        estado='Pendiente',
+    )
+
+    # Redirigir a la vista de mensajes para ese pedido
+    return redirect('pedidos/ver_mensajes', pedido_id=pedido.id)

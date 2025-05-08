@@ -28,4 +28,9 @@ urlpatterns = [
     
     # Admin personalizado para vendedores
     path('vendedor/', vendedor_site.urls),
+    
+    # Mensajería entre cliente y vendedor
+    path('pedido/<int:carrito_id>/proceder_pago/', views.proceder_pago, name='proceder_pago'),
+    path('pedido/<int:pedido_id>/mensajes/', views.ver_mensajes, name='ver_mensajes'),
+    path('pedido/<int:pedido_id>/enviar_mensaje/', views.enviar_mensaje, name='enviar_mensaje'),
 ]

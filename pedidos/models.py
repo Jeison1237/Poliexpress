@@ -26,16 +26,15 @@ class Producto(models.Model):
     descripcion = models.TextField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     disponible = models.BooleanField(default=True)
-    vendedor = models.ForeignKey(User, on_delete=models.CASCADE)
+    vendedor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="productos_vendedor")  # Correcta relación
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
-
 
     def __str__(self):
         return f"{self.nombre} - {self.vendedor.username}"
 
 
 class Carrito(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='carrito')
     ESTADO_CARRITO = [
         ('pendiente', 'Pendiente'),
         ('en_proceso', 'En Proceso'),
@@ -57,3 +56,26 @@ class ItemCarrito(models.Model):
 
     def __str__(self):
         return f"{self.cantidad} x {self.producto.nombre} en {self.carrito}"
+
+
+class Pedido(models.Model):
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pedidos_cliente')
+    vendedor = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='pedidos_vendedor')  # Relación con Perfil
+    carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, related_name='pedidos')
+    estado = models.CharField(max_length=20, default='Pendiente')
+    fecha_pedido = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Pedido de {self.cliente.username} - Estado: {self.estado}"
+
+
+class Mensaje(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='mensajes')
+    emisor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mensajes_enviados')
+    receptor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mensajes_recibidos')
+    contenido = models.TextField()
+    fecha_envio = models.DateTimeField(auto_now_add=True)
+    leido = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Mensaje de {self.emisor.username} a {self.receptor.username} en {self.pedido}"

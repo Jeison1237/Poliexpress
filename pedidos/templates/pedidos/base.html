@@ -48,6 +48,13 @@
 
             <!-- Usuario y Carrito -->
             <div class="d-flex align-items-center flex-column flex-lg-row mt-3 mt-lg-0">
+                {% if user.is_authenticated and pedido_activo %}
+                    <a class="btn btn-sm text-light border-0 me-lg-3 mb-2 mb-lg-0" href="{% url 'pedidos:ver_mensajes' pedido_activo.id %}">
+                        <i class="bi bi-chat-dots"></i>
+                        <span class="d-lg-inline">Mensajes</span>
+                    </a>
+                {% endif %}
+
 
                 <!-- Carrito -->
                 <a class="btn btn-sm text-light border-0 me-lg-3 mb-2 mb-lg-0" href="{% url 'pedidos:carrito' %}">

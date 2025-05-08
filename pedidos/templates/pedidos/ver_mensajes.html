@@ -1,0 +1,20 @@
+<!-- mensajes/ver_mensajes.html -->
+{% extends 'pedidos/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Mensajes para el pedido {{ pedido.id }}</h2>
+    <div id="mensajes">
+        {% for mensaje in mensajes %}
+            <div class="mensaje">
+                <strong>{{ mensaje.emisor.username }}</strong>: {{ mensaje.contenido }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <form method="POST" id="formEnviarMensaje">
+        {% csrf_token %}
+        <textarea name="contenido" rows="3" class="form-control" placeholder="Escribe tu mensaje..."></textarea>
+        <button type="submit" class="btn btn-primary mt-2">Enviar</button>
+    </form>
+</div>
+{% endblock %}
